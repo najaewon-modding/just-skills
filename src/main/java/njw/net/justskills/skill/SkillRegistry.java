@@ -23,7 +23,7 @@ import java.util.Optional;
 public final class SkillRegistry {
     private SkillRegistry() {}
 
-    private static final int DEFAULT_CAST_DURATION_TICKS = 20 * 3;
+    private static final int DEFAULT_CAST_DURATION_TICKS = 20;
     private static final double DEFAULT_MAX_DISPLACEMENT = 1.0;
     private static final SkillUnlockCondition BASIC_SKILL_UNLOCK = new AdvancementUnlockCondition(
             Identifier.fromNamespaceAndPath("blazeandcave", "bacap/root")
