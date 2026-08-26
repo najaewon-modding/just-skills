@@ -17,621 +17,138 @@ import java.util.Set;
 import java.util.UUID;
 
 public final class CrimsonWaveManager {
+    private CrimsonWaveManager() {}
 
-    private CrimsonWaveManager() {
+    private static final double MAX_RADIUS = 10.0;
+    private static final int DURATION_TICKS = 20;
+    private static final double SPIRAL_TURNS = 6.0;
+    private static final int TOTAL_EMITTERS = 180;
+    private static final int DROPLETS_PER_EMITTER = 4;
+
+    private static final double COLUMN_VERTICAL_INNER_MIN = 0.25;
+    private static final double COLUMN_VERTICAL_INNER_MAX = 0.31;
+    private static final double COLUMN_VERTICAL_OUTER_MIN = 0.49;
+    private static final double COLUMN_VERTICAL_OUTER_MAX = 0.60;
+    private static final double SPRAY_VERTICAL_INNER_MIN = 0.18;
+    private static final double SPRAY_VERTICAL_INNER_MAX = 0.24;
+    private static final double SPRAY_VERTICAL_OUTER_MIN = 0.34;
+    private static final double SPRAY_VERTICAL_OUTER_MAX = 0.46;
+    private static final double COLUMN_OUTWARD_MIN = 0.015;
+    private static final double COLUMN_OUTWARD_MAX = 0.045;
+    private static final double SPRAY_OUTWARD_MIN = 0.095;
+    private static final double SPRAY_OUTWARD_MAX = 0.155;
+    private static final double TANGENTIAL_JITTER = 0.055;
+
+    private static final float PARTICLE_ALPHA = 1.0F;
+    private static final float PARTICLE_SIZE = 0.40F;
+    private static final int PARTICLE_LIFETIME = 32;
+    private static final float PARTICLE_GRAVITY = 0.040F;
+    private static final float PARTICLE_DRAG = 0.96F;
+
+    private static final float DAMAGE = 24.0F;
+    private static final double VERTICAL_RANGE = 4.0;
+    private static final double HIT_PADDING = 0.20;
+
+    private static final List<ActiveWave> ACTIVE_WAVES = new ArrayList<>();
+
+    public static void spawn(ServerPlayer player) {
+        ACTIVE_WAVES.add(new ActiveWave(player.getUUID(), player.level().dimension(), player.position()));
     }
 
-    /*
-     * ============================================================
-     * Spiral
-     * ============================================================
-     */
-
-    private static final double MAX_RADIUS =
-            10.0;
-
-    /*
-     * 약 0.9초.
-     */
-    private static final int SPIRAL_DURATION_TICKS =
-            18;
-
-    /*
-     * 약 6바퀴.
-     */
-    private static final double SPIRAL_TURNS =
-            6.0;
-
-    /*
-     * 총 emitter 수.
-     */
-    private static final int TOTAL_EMITTERS =
-            180;
-
-    private static final int DROPLETS_PER_EMITTER =
-            4;
-
-    /*
-     * ============================================================
-     * Vertical velocity
-     * ============================================================
-     *
-     * 중심에서는 낮게 시작하고,
-     * 바깥으로 갈수록 점점 높아진다.
-     */
-
-    /*
-     * 중심의 column 높이.
-     *
-     * 기존 0.36 ~ 0.44보다 확실히 낮춤.
-     */
-    private static final double COLUMN_VERTICAL_INNER_MIN =
-            0.25;
-
-    private static final double COLUMN_VERTICAL_INNER_MAX =
-            0.31;
-
-    /*
-     * 가장 바깥쪽 column 높이.
-     *
-     * 기존 최종 높이보다 살짝 높게.
-     */
-    private static final double COLUMN_VERTICAL_OUTER_MIN =
-            0.49;
-
-    private static final double COLUMN_VERTICAL_OUTER_MAX =
-            0.60;
-
-    /*
-     * Spray도 같은 방식.
-     */
-    private static final double SPRAY_VERTICAL_INNER_MIN =
-            0.18;
-
-    private static final double SPRAY_VERTICAL_INNER_MAX =
-            0.24;
-
-    private static final double SPRAY_VERTICAL_OUTER_MIN =
-            0.34;
-
-    private static final double SPRAY_VERTICAL_OUTER_MAX =
-            0.46;
-
-    /*
-     * ============================================================
-     * Horizontal velocity
-     * ============================================================
-     */
-
-    private static final double COLUMN_OUTWARD_MIN =
-            0.015;
-
-    private static final double COLUMN_OUTWARD_MAX =
-            0.045;
-
-    private static final double SPRAY_OUTWARD_MIN =
-            0.095;
-
-    private static final double SPRAY_OUTWARD_MAX =
-            0.155;
-
-    private static final double TANGENTIAL_JITTER =
-            0.055;
-
-    /*
-     * ============================================================
-     * Particle
-     * ============================================================
-     */
-
-    private static final float PARTICLE_ALPHA =
-            1.0F;
-
-    private static final float PARTICLE_SIZE =
-            0.40F;
-
-    private static final int PARTICLE_LIFETIME =
-            32;
-
-    private static final float PARTICLE_GRAVITY =
-            0.040F;
-
-    private static final float PARTICLE_DRAG =
-            0.96F;
-
-    /*
-     * ============================================================
-     * Damage
-     * ============================================================
-     */
-
-    private static final float DAMAGE =
-            24.0F;
-
-    private static final double VERTICAL_RANGE =
-            4.0;
-
-    private static final double HIT_PADDING =
-            0.20;
-
-    /*
-     * ============================================================
-     * Active waves
-     * ============================================================
-     */
-
-    private static final List<ActiveWave>
-            ACTIVE_WAVES =
-            new ArrayList<>();
-
-    public static void spawn(
-            ServerPlayer player
-    ) {
-
-        ACTIVE_WAVES.add(
-                new ActiveWave(
-                        player.getUUID(),
-                        player.level().dimension(),
-                        player.position()
-                )
-        );
-    }
-
-    public static void tick(
-            ServerLevel level
-    ) {
-
-        Iterator<ActiveWave> iterator =
-                ACTIVE_WAVES.iterator();
+    public static void tick(ServerLevel level) {
+        Iterator<ActiveWave> iterator = ACTIVE_WAVES.iterator();
 
         while (iterator.hasNext()) {
+            ActiveWave wave = iterator.next();
+            if (!wave.dimension.equals(level.dimension())) continue;
 
-            ActiveWave wave =
-                    iterator.next();
-
-            if (!wave.dimension.equals(
-                    level.dimension()
-            )) {
-                continue;
-            }
-
-            ServerPlayer owner =
-                    level.getServer()
-                            .getPlayerList()
-                            .getPlayer(
-                                    wave.owner
-                            );
-
-            if (owner == null) {
-
+            ServerPlayer owner = level.getServer().getPlayerList().getPlayer(wave.owner);
+            if (owner == null || !owner.level().dimension().equals(wave.dimension)) {
                 iterator.remove();
                 continue;
             }
 
-            if (!owner.level()
-                    .dimension()
-                    .equals(
-                            wave.dimension
-                    )) {
-
-                iterator.remove();
-                continue;
-            }
-
-            if (!wave.tick(
-                    level,
-                    owner
-            )) {
-
-                iterator.remove();
-            }
+            if (!wave.tick(level, owner)) iterator.remove();
         }
     }
 
-    /*
-     * ============================================================
-     * Active Wave
-     * ============================================================
-     */
-
     private static final class ActiveWave {
-
         private final UUID owner;
-
-        private final ResourceKey<Level>
-                dimension;
-
+        private final ResourceKey<Level> dimension;
         private final Vec3 center;
+        private final Set<UUID> hitEntities = new HashSet<>();
+        private int age = 0;
+        private double currentRadius = 0.0;
 
-        private final Set<UUID>
-                hitEntities =
-                new HashSet<>();
-
-        private int age =
-                0;
-
-        private double currentRadius =
-                0.0;
-
-        private ActiveWave(
-                UUID owner,
-                ResourceKey<Level> dimension,
-                Vec3 center
-        ) {
-
-            this.owner =
-                    owner;
-
-            this.dimension =
-                    dimension;
-
-            this.center =
-                    center;
+        private ActiveWave(UUID owner, ResourceKey<Level> dimension, Vec3 center) {
+            this.owner = owner;
+            this.dimension = dimension;
+            this.center = center;
         }
 
-        private boolean tick(
-                ServerLevel level,
-                ServerPlayer ownerPlayer
-        ) {
+        private boolean tick(ServerLevel level, ServerPlayer ownerPlayer) {
+            int firstEmitter = age * TOTAL_EMITTERS / DURATION_TICKS;
+            int endEmitter = (age + 1) * TOTAL_EMITTERS / DURATION_TICKS;
 
-            int firstEmitter =
-                    age
-                            * TOTAL_EMITTERS
-                            / SPIRAL_DURATION_TICKS;
-
-            int endEmitter =
-                    (age + 1)
-                            * TOTAL_EMITTERS
-                            / SPIRAL_DURATION_TICKS;
-
-            for (int emitterIndex = firstEmitter;
-                 emitterIndex < endEmitter;
-                 emitterIndex++) {
-
-                double progress =
-                        Math.clamp(
-                                emitterIndex
-                                        / (double)
-                                        (TOTAL_EMITTERS - 1),
-
-                                0.0,
-                                1.0
-                        );
-
-                double radius =
-                        MAX_RADIUS
-                                * progress;
-
-                double angle =
-                        progress
-                                * SPIRAL_TURNS
-                                * Math.PI
-                                * 2.0;
-
-                currentRadius =
-                        Math.max(
-                                currentRadius,
-                                radius
-                        );
-
-                spawnEmitter(
-                        level,
-                        radius,
-                        angle,
-                        progress
-                );
+            for (int emitterIndex = firstEmitter; emitterIndex < endEmitter; emitterIndex++) {
+                double progress = Math.clamp(emitterIndex / (double) (TOTAL_EMITTERS - 1), 0.0, 1.0);
+                double radius = MAX_RADIUS * progress;
+                double angle = progress * SPIRAL_TURNS * Math.PI * 2.0;
+                currentRadius = Math.max(currentRadius, radius);
+                spawnEmitter(level, radius, angle, progress);
             }
 
-            RadialDamage.damageHostilesOnce(
-                    level,
-                    ownerPlayer,
-                    center,
-                    currentRadius,
-                    VERTICAL_RANGE,
-                    HIT_PADDING,
-                    DAMAGE,
-                    hitEntities
-            );
-
+            RadialDamage.damageHostilesOnce(level, ownerPlayer, center, currentRadius, VERTICAL_RANGE, HIT_PADDING, DAMAGE, hitEntities);
             age++;
-
-            return age
-                    < SPIRAL_DURATION_TICKS;
+            return age < DURATION_TICKS;
         }
 
-        /*
-         * ========================================================
-         * Emitter
-         * ========================================================
-         */
+        private void spawnEmitter(ServerLevel level, double radius, double angle, double progress) {
+            RandomSource random = level.getRandom();
+            double cos = Math.cos(angle);
+            double sin = Math.sin(angle);
+            double x = center.x + cos * radius;
+            double y = center.y + 0.01;
+            double z = center.z + sin * radius;
+            double clampedProgress = Math.clamp(progress, 0.0, 1.0);
 
-        private void spawnEmitter(
-                ServerLevel level,
-                double radius,
-                double angle,
-                double progress
-        ) {
+            double columnVerticalMin = lerp(COLUMN_VERTICAL_INNER_MIN, COLUMN_VERTICAL_OUTER_MIN, clampedProgress);
+            double columnVerticalMax = lerp(COLUMN_VERTICAL_INNER_MAX, COLUMN_VERTICAL_OUTER_MAX, clampedProgress);
+            double sprayVerticalMin = lerp(SPRAY_VERTICAL_INNER_MIN, SPRAY_VERTICAL_OUTER_MIN, clampedProgress);
+            double sprayVerticalMax = lerp(SPRAY_VERTICAL_INNER_MAX, SPRAY_VERTICAL_OUTER_MAX, clampedProgress);
 
-            RandomSource random =
-                    level.getRandom();
+            BallisticParticleOption darkRed = particle(0.55F, 0.005F, 0.010F);
+            BallisticParticleOption crimson = particle(0.88F, 0.015F, 0.025F);
+            BallisticParticleOption brightRed = particle(1.00F, 0.070F, 0.090F);
 
-            double cos =
-                    Math.cos(angle);
+            double columnOutward = randomBetween(random, COLUMN_OUTWARD_MIN, COLUMN_OUTWARD_MAX);
+            double columnVertical = randomBetween(random, columnVerticalMin, columnVerticalMax);
+            double columnTangent = randomBetween(random, -TANGENTIAL_JITTER * 0.35, TANGENTIAL_JITTER * 0.35);
+            sendDroplet(level, crimson, x, y, z, cos * columnOutward - sin * columnTangent, columnVertical, sin * columnOutward + cos * columnTangent);
 
-            double sin =
-                    Math.sin(angle);
-
-            double x =
-                    center.x
-                            + cos * radius;
-
-            /*
-             * 생성 위치 자체도 약간 더 낮춤.
-             *
-             * 기존 +0.03.
-             */
-            double y =
-                    center.y
-                            + 0.01;
-
-            double z =
-                    center.z
-                            + sin * radius;
-
-            double clampedProgress =
-                    Math.clamp(
-                            progress,
-                            0.0,
-                            1.0
-                    );
-
-            /*
-             * ====================================================
-             * 현재 반경에서 사용할 높이
-             * ====================================================
-             */
-
-            double columnVerticalMin =
-                    lerp(
-                            COLUMN_VERTICAL_INNER_MIN,
-                            COLUMN_VERTICAL_OUTER_MIN,
-                            clampedProgress
-                    );
-
-            double columnVerticalMax =
-                    lerp(
-                            COLUMN_VERTICAL_INNER_MAX,
-                            COLUMN_VERTICAL_OUTER_MAX,
-                            clampedProgress
-                    );
-
-            double sprayVerticalMin =
-                    lerp(
-                            SPRAY_VERTICAL_INNER_MIN,
-                            SPRAY_VERTICAL_OUTER_MIN,
-                            clampedProgress
-                    );
-
-            double sprayVerticalMax =
-                    lerp(
-                            SPRAY_VERTICAL_INNER_MAX,
-                            SPRAY_VERTICAL_OUTER_MAX,
-                            clampedProgress
-                    );
-
-            /*
-             * ====================================================
-             * Colors
-             * ====================================================
-             */
-
-            BallisticParticleOption darkRed =
-                    particle(
-                            0.55F,
-                            0.005F,
-                            0.010F
-                    );
-
-            BallisticParticleOption crimson =
-                    particle(
-                            0.88F,
-                            0.015F,
-                            0.025F
-                    );
-
-            BallisticParticleOption brightRed =
-                    particle(
-                            1.00F,
-                            0.070F,
-                            0.090F
-                    );
-
-            /*
-             * ====================================================
-             * Column
-             * ====================================================
-             */
-
-            double columnOutward =
-                    randomBetween(
-                            random,
-                            COLUMN_OUTWARD_MIN,
-                            COLUMN_OUTWARD_MAX
-                    );
-
-            double columnVertical =
-                    randomBetween(
-                            random,
-                            columnVerticalMin,
-                            columnVerticalMax
-                    );
-
-            double columnTangent =
-                    randomBetween(
-                            random,
-                            -TANGENTIAL_JITTER * 0.35,
-                            TANGENTIAL_JITTER * 0.35
-                    );
-
-            sendDroplet(
-                    level,
-                    crimson,
-
-                    x,
-                    y,
-                    z,
-
-                    cos * columnOutward
-                            - sin * columnTangent,
-
-                    columnVertical,
-
-                    sin * columnOutward
-                            + cos * columnTangent
-            );
-
-            /*
-             * ====================================================
-             * Spray
-             * ====================================================
-             */
-
-            for (int droplet = 1;
-                 droplet < DROPLETS_PER_EMITTER;
-                 droplet++) {
-
-                double outward =
-                        randomBetween(
-                                random,
-                                SPRAY_OUTWARD_MIN,
-                                SPRAY_OUTWARD_MAX
-                        );
-
-                double vertical =
-                        randomBetween(
-                                random,
-                                sprayVerticalMin,
-                                sprayVerticalMax
-                        );
-
-                double tangent =
-                        randomBetween(
-                                random,
-                                -TANGENTIAL_JITTER,
-                                TANGENTIAL_JITTER
-                        );
-
-                BallisticParticleOption selected =
-                        random.nextBoolean()
-                                ? brightRed
-                                : darkRed;
-
-                sendDroplet(
-                        level,
-                        selected,
-
-                        x,
-                        y,
-                        z,
-
-                        cos * outward
-                                - sin * tangent,
-
-                        vertical,
-
-                        sin * outward
-                                + cos * tangent
-                );
+            for (int droplet = 1; droplet < DROPLETS_PER_EMITTER; droplet++) {
+                double outward = randomBetween(random, SPRAY_OUTWARD_MIN, SPRAY_OUTWARD_MAX);
+                double vertical = randomBetween(random, sprayVerticalMin, sprayVerticalMax);
+                double tangent = randomBetween(random, -TANGENTIAL_JITTER, TANGENTIAL_JITTER);
+                BallisticParticleOption selected = random.nextBoolean() ? brightRed : darkRed;
+                sendDroplet(level, selected, x, y, z, cos * outward - sin * tangent, vertical, sin * outward + cos * tangent);
             }
         }
 
-        /*
-         * ========================================================
-         * Particle
-         * ========================================================
-         */
-
-        private BallisticParticleOption particle(
-                float red,
-                float green,
-                float blue
-        ) {
-
-            return new BallisticParticleOption(
-                    red,
-                    green,
-                    blue,
-
-                    PARTICLE_ALPHA,
-                    PARTICLE_SIZE,
-                    PARTICLE_LIFETIME,
-                    PARTICLE_GRAVITY,
-                    PARTICLE_DRAG
-            );
+        private BallisticParticleOption particle(float red, float green, float blue) {
+            return new BallisticParticleOption(red, green, blue, PARTICLE_ALPHA, PARTICLE_SIZE, PARTICLE_LIFETIME, PARTICLE_GRAVITY, PARTICLE_DRAG);
         }
 
-        private void sendDroplet(
-                ServerLevel level,
-                BallisticParticleOption particle,
-
-                double x,
-                double y,
-                double z,
-
-                double velocityX,
-                double velocityY,
-                double velocityZ
-        ) {
-
-            level.sendParticles(
-                    particle,
-
-                    x,
-                    y,
-                    z,
-
-                    0,
-
-                    velocityX,
-                    velocityY,
-                    velocityZ,
-
-                    1.0
-            );
+        private void sendDroplet(ServerLevel level, BallisticParticleOption particle, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
+            level.sendParticles(particle, x, y, z, 0, velocityX, velocityY, velocityZ, 1.0);
         }
 
-        /*
-         * ========================================================
-         * Math
-         * ========================================================
-         */
-
-        private double lerp(
-                double start,
-                double end,
-                double progress
-        ) {
-
-            return start
-                    + (
-                    end - start
-            )
-                    * Math.clamp(
-                    progress,
-                    0.0,
-                    1.0
-            );
+        private double lerp(double start, double end, double progress) {
+            return start + (end - start) * Math.clamp(progress, 0.0, 1.0);
         }
 
-        private double randomBetween(
-                RandomSource random,
-                double min,
-                double max
-        ) {
-
-            return min
-                    + random.nextDouble()
-                    * (max - min);
+        private double randomBetween(RandomSource random, double min, double max) {
+            return min + random.nextDouble() * (max - min);
         }
     }
 }

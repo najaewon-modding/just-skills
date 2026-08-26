@@ -1,11 +1,13 @@
 {
   "key.category.jwn_just_skills.skills": "Just Skills",
   "key.jwn_just_skills.use_skill": "Use Skill",
-
   "skill.jwn_just_skills.crimson_wave": "Crimson Wave",
   "skill.jwn_just_skills.azure_wave": "Azure Wave",
   "skill.jwn_just_skills.amber_disk": "Amber Disk",
-
+  "skill.jwn_just_skills.emerald_spikes": "Emerald Spikes",
+  "skill.jwn_just_skills.golden_flicker": "Golden Flicker",
+  "skill.jwn_just_skills.indigo_orbit": "Indigo Orbit",
+  "skill.jwn_just_skills.violet_rift": "Violet Rift",
   "message.jwn_just_skills.casting": "Casting: %s",
   "message.jwn_just_skills.new_skill": "New skill: %s",
   "message.jwn_just_skills.already_used": "You have already used this skill."

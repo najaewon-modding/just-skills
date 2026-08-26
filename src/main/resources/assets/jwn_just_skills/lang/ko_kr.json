@@ -1,11 +1,13 @@
 {
   "key.category.jwn_just_skills.skills": "Just Skills",
   "key.jwn_just_skills.use_skill": "스킬 사용",
-
   "skill.jwn_just_skills.crimson_wave": "붉은 파동",
   "skill.jwn_just_skills.azure_wave": "푸른 파동",
   "skill.jwn_just_skills.amber_disk": "호박빛 원반",
-
+  "skill.jwn_just_skills.emerald_spikes": "초록 가시",
+  "skill.jwn_just_skills.golden_flicker": "황금 점멸",
+  "skill.jwn_just_skills.indigo_orbit": "남빛 궤도",
+  "skill.jwn_just_skills.violet_rift": "보랏빛 균열",
   "message.jwn_just_skills.casting": "시전 중: %s",
   "message.jwn_just_skills.new_skill": "새로운 스킬: %s",
   "message.jwn_just_skills.already_used": "이 스킬은 이미 사용했습니다."
