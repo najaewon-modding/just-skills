@@ -1,37 +1,73 @@
 # Just Skills
 
-A NeoForge mod that lets players unlock skills through advancements and use a random unlocked skill every five minutes.
+Just Skills is a NeoForge mod that gives the player one random skill at a time.
 
-## Minecraft Version
+After using a skill, a five-minute cooldown begins. Once the cooldown has ended, press the skill key to receive a random available skill, then press it again to cast that skill.
 
-* Minecraft: 26.1.2
-* Mod Loader: NeoForge
+## Requirements
 
-## Features
+- Minecraft 26.1.2
+- NeoForge 26.1.2.97
+- Java 25
 
-* Unlock skills by completing advancements.
-* Optional integration with BlazeandCave's Advancements Pack (BACAP).
-* Receive one random unlocked skill every 5 minutes.
-* Each skill can be used once during its 5-minute cycle.
-* Skills are handled server-side for multiplayer compatibility.
-* No Mixins are used initially.
+## Skills
 
-## Current Status
+Just Skills currently includes seven skills:
 
-This mod is currently in early development and mainly serves as a playground for experimenting with different skills and NeoForge features.
+- Crimson Wave
+- Azure Wave
+- Amber Disk
+- Emerald Spikes
+- Golden Flicker
+- Indigo Orbit
+- Violet Rift
 
-## Planned
+## Controls
 
-* Random skill cycle
-* Player skill data
-* Skill activation key
-* Skill HUD
-* BACAP advancement integration
-* More skills
-* Optional advanced skill mechanics
+The default skill key is `G`.
 
-## Design Principle
+When no skill is currently assigned and the cooldown has finished:
 
-Use vanilla Minecraft and NeoForge APIs/events whenever possible.
+1. Press `G` to receive a random skill.
+2. Press `G` again to begin casting it.
+3. Successfully casting the skill consumes it and starts the five-minute cooldown.
 
-Mixins will only be introduced when a skill cannot reasonably be implemented through the available APIs.
+Cancelling a cast does not consume the skill or start the cooldown.
+
+## Casting
+
+All current skills use a stationary cast.
+
+Movement is restricted while casting, and moving too far from the starting position cancels the cast.
+
+Skill activation and damage are handled by the server.
+
+## Cooldown
+
+The cooldown after a successful skill use is five minutes.
+
+The HUD shows the currently assigned skill and the remaining cooldown state.
+
+## Multiplayer
+
+Skill selection, casting, cooldowns, and damage are server-authoritative.
+
+No Mixins are used.
+
+## Commands
+
+`/justskills cast <skill>`
+
+Immediately activates the selected skill for testing and administration.
+
+This command bypasses the normal skill assignment, casting, and cooldown flow and requires Game Master permission.
+
+## Skill Unlocking
+
+The skill system supports unlock conditions, including advancement-based conditions.
+
+The seven skills included in the current release are available by default.
+
+## License
+
+All Rights Reserved.

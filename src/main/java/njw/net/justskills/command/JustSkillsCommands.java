@@ -6,6 +6,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -16,93 +17,33 @@ import njw.net.justskills.skill.SkillRegistry;
 
 @EventBusSubscriber(modid = JustSkills.MODID)
 public final class JustSkillsCommands {
-
-    private JustSkillsCommands() {
-    }
+    private JustSkillsCommands() {}
 
     @SubscribeEvent
-    public static void onRegisterCommands(
-            RegisterCommandsEvent event
-    ) {
+    public static void onRegisterCommands(RegisterCommandsEvent event) {
+        LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal("justskills");
+        LiteralArgumentBuilder<CommandSourceStack> cast = Commands.literal("cast")
+                .requires(source -> source.isPlayer() && source.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER));
 
-        LiteralArgumentBuilder<CommandSourceStack> root =
-                Commands.literal("justskills");
-
-        LiteralArgumentBuilder<CommandSourceStack> cast =
-                Commands.literal("cast")
-                        .requires(CommandSourceStack::isPlayer);
-
-        /*
-         * SkillRegistry에 등록된 모든 스킬을
-         * 자동으로 하위 명령어로 추가한다.
-         *
-         * 예:
-         *
-         * crimson_wave
-         * azure_wave
-         * heal
-         * blink
-         * ...
-         */
-        for (SkillDefinition definition
-                : SkillRegistry.values()) {
-
-            String skillName =
-                    definition.id().getPath();
-
-            cast.then(
-                    Commands.literal(skillName)
-                            .executes(context ->
-                                    castImmediately(
-                                            context.getSource(),
-                                            definition
-                                    )
-                            )
-            );
+        for (SkillDefinition definition : SkillRegistry.values()) {
+            cast.then(Commands.literal(definition.id().getPath())
+                    .executes(context -> castImmediately(context.getSource(), definition)));
         }
 
         root.then(cast);
-
-        event.getDispatcher()
-                .register(root);
+        event.getDispatcher().register(root);
     }
 
-    private static int castImmediately(
-            CommandSourceStack source,
-            SkillDefinition definition
-    ) throws CommandSyntaxException {
+    private static int castImmediately(CommandSourceStack source, SkillDefinition definition) throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        SkillContext context = new SkillContext(player, player.level());
 
-        ServerPlayer player =
-                source.getPlayerOrException();
-
-        SkillContext context =
-                new SkillContext(
-                        player,
-                        player.level()
-                );
-
-        boolean success =
-                definition.skill()
-                        .activate(context);
-
-        if (!success) {
-
-            source.sendFailure(
-                    Component.literal(
-                            "Failed to cast skill: "
-                                    + definition.id()
-                    )
-            );
-
+        if (!definition.skill().activate(context)) {
+            source.sendFailure(Component.literal("Failed to cast skill: " + definition.id()));
             return 0;
         }
 
-        source.sendSuccess(
-                () -> Component.literal("Cast: ")
-                        .append(definition.displayName()),
-                false
-        );
-
+        source.sendSuccess(() -> Component.literal("Cast: ").append(definition.displayName()), false);
         return 1;
     }
 }
