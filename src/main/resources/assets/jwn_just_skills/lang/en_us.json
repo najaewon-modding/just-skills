@@ -10,5 +10,7 @@
   "skill.jwn_just_skills.violet_rift": "Violet Rift",
   "message.jwn_just_skills.casting": "Casting: %s",
   "message.jwn_just_skills.new_skill": "New skill: %s",
-  "message.jwn_just_skills.already_used": "You have already used this skill."
+  "message.jwn_just_skills.already_used": "You have already used this skill.",
+  "message.jwn_just_skills.cooldown_remaining": "Skill is not ready yet. Time remaining: %s min %s sec",
+  "message.jwn_just_skills.no_available_skills": "No skills are currently available."
 }

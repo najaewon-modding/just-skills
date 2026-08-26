@@ -12,7 +12,7 @@ import njw.net.justskills.skill.impl.EmeraldSpikesSkill;
 import njw.net.justskills.skill.impl.GoldenFlickerSkill;
 import njw.net.justskills.skill.impl.IndigoOrbitSkill;
 import njw.net.justskills.skill.impl.VioletRiftSkill;
-import njw.net.justskills.unlock.AlwaysUnlockedCondition;
+import njw.net.justskills.unlock.AdvancementUnlockCondition;
 import njw.net.justskills.unlock.SkillUnlockCondition;
 
 import java.util.Collection;
@@ -23,8 +23,11 @@ import java.util.Optional;
 public final class SkillRegistry {
     private SkillRegistry() {}
 
-    private static final int DEFAULT_CAST_DURATION_TICKS = 20;
+    private static final int DEFAULT_CAST_DURATION_TICKS = 20 * 3;
     private static final double DEFAULT_MAX_DISPLACEMENT = 1.0;
+    private static final SkillUnlockCondition BASIC_SKILL_UNLOCK = new AdvancementUnlockCondition(
+            Identifier.fromNamespaceAndPath("blazeandcave", "bacap/root")
+    );
     private static final Map<Identifier, SkillDefinition> SKILLS = new LinkedHashMap<>();
 
     public static final SkillDefinition CRIMSON_WAVE = register(
@@ -33,7 +36,7 @@ public final class SkillRegistry {
             Items.REDSTONE,
             new CrimsonWaveSkill(),
             CastSpec.stationary(DEFAULT_CAST_DURATION_TICKS, DEFAULT_MAX_DISPLACEMENT),
-            AlwaysUnlockedCondition.INSTANCE
+            BASIC_SKILL_UNLOCK
     );
 
     public static final SkillDefinition AZURE_WAVE = register(
@@ -42,7 +45,7 @@ public final class SkillRegistry {
             Items.LAPIS_LAZULI,
             new AzureWaveSkill(),
             CastSpec.stationary(DEFAULT_CAST_DURATION_TICKS, DEFAULT_MAX_DISPLACEMENT),
-            AlwaysUnlockedCondition.INSTANCE
+            BASIC_SKILL_UNLOCK
     );
 
     public static final SkillDefinition AMBER_DISK = register(
@@ -51,7 +54,7 @@ public final class SkillRegistry {
             Items.COPPER_INGOT,
             new AmberDiskSkill(),
             CastSpec.stationary(DEFAULT_CAST_DURATION_TICKS, DEFAULT_MAX_DISPLACEMENT),
-            AlwaysUnlockedCondition.INSTANCE
+            BASIC_SKILL_UNLOCK
     );
 
     public static final SkillDefinition EMERALD_SPIKES = register(
@@ -60,7 +63,7 @@ public final class SkillRegistry {
             Items.EMERALD,
             new EmeraldSpikesSkill(),
             CastSpec.stationary(DEFAULT_CAST_DURATION_TICKS, DEFAULT_MAX_DISPLACEMENT),
-            AlwaysUnlockedCondition.INSTANCE
+            BASIC_SKILL_UNLOCK
     );
 
     public static final SkillDefinition GOLDEN_FLICKER = register(
@@ -69,7 +72,7 @@ public final class SkillRegistry {
             Items.GLOWSTONE_DUST,
             new GoldenFlickerSkill(),
             CastSpec.stationary(DEFAULT_CAST_DURATION_TICKS, DEFAULT_MAX_DISPLACEMENT),
-            AlwaysUnlockedCondition.INSTANCE
+            BASIC_SKILL_UNLOCK
     );
 
     public static final SkillDefinition INDIGO_ORBIT = register(
@@ -78,7 +81,7 @@ public final class SkillRegistry {
             Items.ECHO_SHARD,
             new IndigoOrbitSkill(),
             CastSpec.stationary(DEFAULT_CAST_DURATION_TICKS, DEFAULT_MAX_DISPLACEMENT),
-            AlwaysUnlockedCondition.INSTANCE
+            BASIC_SKILL_UNLOCK
     );
 
     public static final SkillDefinition VIOLET_RIFT = register(
@@ -87,17 +90,10 @@ public final class SkillRegistry {
             Items.AMETHYST_SHARD,
             new VioletRiftSkill(),
             CastSpec.stationary(DEFAULT_CAST_DURATION_TICKS, DEFAULT_MAX_DISPLACEMENT),
-            AlwaysUnlockedCondition.INSTANCE
+            BASIC_SKILL_UNLOCK
     );
 
-    private static SkillDefinition register(
-            String path,
-            String translationKey,
-            Item iconItem,
-            Skill skill,
-            CastSpec castSpec,
-            SkillUnlockCondition unlockCondition
-    ) {
+    private static SkillDefinition register(String path, String translationKey, Item iconItem, Skill skill, CastSpec castSpec, SkillUnlockCondition unlockCondition) {
         Identifier id = Identifier.fromNamespaceAndPath(JustSkills.MODID, path);
         SkillDefinition definition = new SkillDefinition(id, translationKey, iconItem, skill, castSpec, unlockCondition);
 

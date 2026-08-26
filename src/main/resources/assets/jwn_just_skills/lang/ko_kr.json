@@ -10,5 +10,7 @@
   "skill.jwn_just_skills.violet_rift": "보랏빛 균열",
   "message.jwn_just_skills.casting": "시전 중: %s",
   "message.jwn_just_skills.new_skill": "새로운 스킬: %s",
-  "message.jwn_just_skills.already_used": "이 스킬은 이미 사용했습니다."
+  "message.jwn_just_skills.already_used": "이 스킬은 이미 사용했습니다.",
+  "message.jwn_just_skills.cooldown_remaining": "스킬을 아직 사용할 수 없습니다. 남은 시간: %s분 %s초",
+  "message.jwn_just_skills.no_available_skills": "현재 사용 가능한 스킬이 없습니다."
 }

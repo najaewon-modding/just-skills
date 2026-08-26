@@ -1,5 +1,6 @@
 package njw.net.justskills.skill;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,7 +24,11 @@ public final class SkillManager {
         long now = player.level().getGameTime();
 
         if (state.currentSkill().isEmpty()) {
-            if (state.isCoolingDown(now)) return;
+            if (state.isCoolingDown(now)) {
+                showCooldownMessage(player, state.cooldownEndTick() - now);
+                return;
+            }
+
             assignRandomSkill(player);
             return;
         }
@@ -32,11 +37,17 @@ public final class SkillManager {
 
         if (optional.isEmpty()) {
             setState(player, PlayerSkillState.empty());
+            showNoAvailableSkillsMessage(player);
             return;
         }
 
         SkillDefinition definition = optional.get();
-        if (!definition.unlockCondition().isUnlocked(player)) return;
+
+        if (!definition.unlockCondition().isUnlocked(player)) {
+            setState(player, PlayerSkillState.empty());
+            showNoAvailableSkillsMessage(player);
+            return;
+        }
 
         startSkill(player, definition);
     }
@@ -55,7 +66,12 @@ public final class SkillManager {
 
         if (state.currentSkill().isEmpty()) return;
         if (!state.currentSkill().get().equals(definition.id())) return;
-        if (!definition.unlockCondition().isUnlocked(player)) return;
+
+        if (!definition.unlockCondition().isUnlocked(player)) {
+            setState(player, PlayerSkillState.empty());
+            showNoAvailableSkillsMessage(player);
+            return;
+        }
 
         activateAndStartCooldown(player, definition);
     }
@@ -77,11 +93,38 @@ public final class SkillManager {
             if (definition.unlockCondition().isUnlocked(player)) unlocked.add(definition);
         }
 
-        if (unlocked.isEmpty()) return;
+        if (unlocked.isEmpty()) {
+            showNoAvailableSkillsMessage(player);
+            return;
+        }
 
         SkillDefinition selected = unlocked.get(player.level().getRandom().nextInt(unlocked.size()));
         setState(player, getState(player).withSkill(selected.id()));
-        player.sendSystemMessage(Component.translatable("message.jwn_just_skills.new_skill", selected.displayName()));
+        player.sendSystemMessage(Component.translatable(
+                "message.jwn_just_skills.new_skill",
+                selected.displayName()
+        ));
+    }
+
+    private static void showCooldownMessage(ServerPlayer player, long remainingTicks) {
+        long remainingSeconds = Math.max(1L, (remainingTicks + 19L) / 20L);
+        long minutes = remainingSeconds / 60L;
+        long seconds = remainingSeconds % 60L;
+
+        player.sendOverlayMessage(
+                Component.translatable(
+                        "message.jwn_just_skills.cooldown_remaining",
+                        minutes,
+                        seconds
+                ).withStyle(ChatFormatting.RED)
+        );
+    }
+
+    private static void showNoAvailableSkillsMessage(ServerPlayer player) {
+        player.sendOverlayMessage(
+                Component.translatable("message.jwn_just_skills.no_available_skills")
+                        .withStyle(ChatFormatting.RED)
+        );
     }
 
     public static PlayerSkillState getState(ServerPlayer player) {

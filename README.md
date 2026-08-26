@@ -1,18 +1,19 @@
 # Just Skills
 
-Just Skills is a NeoForge mod that gives the player one random skill at a time.
+Just Skills는 플레이어가 일정 시간마다 무작위 스킬을 받아 사용할 수 있도록 하는 NeoForge 모드입니다.
 
-After using a skill, a five-minute cooldown begins. Once the cooldown has ended, press the skill key to receive a random available skill, then press it again to cast that skill.
+스킬을 사용하면 5분의 재사용 대기시간이 시작됩니다. 재사용 대기시간이 끝난 뒤 스킬 키를 누르면 현재 해금된 스킬 중 하나가 무작위로 배정되고, 다시 한 번 스킬 키를 누르면 해당 스킬을 시전합니다.
 
-## Requirements
+## 요구 사항
 
 - Minecraft 26.1.2
 - NeoForge 26.1.2.97
 - Java 25
+- BlazeandCave's Advancements Pack 1.20.3
 
-## Skills
+## 스킬
 
-Just Skills currently includes seven skills:
+현재 Just Skills에는 7개의 기본 스킬이 포함되어 있습니다.
 
 - Crimson Wave
 - Azure Wave
@@ -22,52 +23,70 @@ Just Skills currently includes seven skills:
 - Indigo Orbit
 - Violet Rift
 
-## Controls
+## 스킬 해금
 
-The default skill key is `G`.
+7개의 기본 스킬은 BlazeandCave's Advancements Pack의 발전 과제와 연동됩니다.
 
-When no skill is currently assigned and the cooldown has finished:
+기본 스킬의 해금 조건은 다음 BACAP 발전 과제입니다.
 
-1. Press `G` to receive a random skill.
-2. Press `G` again to begin casting it.
-3. Successfully casting the skill consumes it and starts the five-minute cooldown.
+`blazeandcave:bacap/root`
 
-Cancelling a cast does not consume the skill or start the cooldown.
+해당 발전 과제를 완료한 플레이어만 기본 스킬을 사용할 수 있습니다.
 
-## Casting
+BACAP이 설치되어 있지 않거나 필요한 발전 과제를 완료하지 않은 경우 사용할 수 있는 기본 스킬이 없습니다. 이 상태에서 스킬 키를 누르면 사용 가능한 스킬이 없다는 경고 메시지가 표시됩니다.
 
-All current skills use a stationary cast.
+Just Skills 자체는 BACAP이 없어도 로드될 수 있지만, BACAP 발전 과제를 조건으로 사용하는 기본 스킬은 잠긴 상태로 유지됩니다.
 
-Movement is restricted while casting, and moving too far from the starting position cancels the cast.
+## 조작법
 
-Skill activation and damage are handled by the server.
+기본 스킬 키는 `G`입니다.
 
-## Cooldown
+현재 배정된 스킬이 없고 재사용 대기시간이 끝난 상태에서는 다음 순서로 동작합니다.
 
-The cooldown after a successful skill use is five minutes.
+1. `G`를 눌러 현재 해금된 스킬 중 하나를 무작위로 배정받습니다.
+2. 다시 `G`를 눌러 배정된 스킬의 시전을 시작합니다.
+3. 시전에 성공하면 스킬이 발동되고 현재 스킬이 제거되며 5분의 재사용 대기시간이 시작됩니다.
 
-The HUD shows the currently assigned skill and the remaining cooldown state.
+시전이 취소된 경우에는 스킬이 사라지지 않으며 재사용 대기시간도 시작되지 않습니다.
 
-## Multiplayer
+## 시전
 
-Skill selection, casting, cooldowns, and damage are server-authoritative.
+현재 모든 스킬은 정지형 시전 방식을 사용합니다.
 
-No Mixins are used.
+시전 중에는 이동이 제한되며, 시전 시작 위치에서 일정 거리 이상 벗어나면 시전이 취소됩니다.
 
-## Commands
+스킬 발동, 해금 여부 확인, 재사용 대기시간, 피해 처리는 모두 서버에서 판정합니다.
+
+## 재사용 대기시간
+
+스킬 사용에 성공하면 5분의 재사용 대기시간이 시작됩니다.
+
+재사용 대기시간이 끝난 뒤에는 자동으로 스킬이 지급되지 않습니다. 스킬 키를 눌러야 새로운 스킬이 무작위로 배정됩니다.
+
+HUD에는 현재 배정된 스킬과 재사용 대기시간 상태가 표시됩니다.
+
+## 멀티플레이
+
+다음 기능은 서버 권한으로 처리됩니다.
+
+- 스킬 해금 여부
+- 스킬 무작위 배정
+- 스킬 시전
+- 재사용 대기시간
+- 스킬 피해
+
+Mixin은 사용하지 않습니다.
+
+## 명령어
 
 `/justskills cast <skill>`
 
-Immediately activates the selected skill for testing and administration.
+선택한 스킬을 즉시 발동하는 관리자 및 테스트용 명령어입니다.
 
-This command bypasses the normal skill assignment, casting, and cooldown flow and requires Game Master permission.
+이 명령어는 일반적인 스킬 배정, 해금 조건, 시전 과정, 재사용 대기시간을 우회합니다.
 
-## Skill Unlocking
+Game Master 권한이 있는 플레이어만 사용할 수 있습니다.
 
-The skill system supports unlock conditions, including advancement-based conditions.
-
-The seven skills included in the current release are available by default.
-
-## License
+## 라이선스
 
 All Rights Reserved.
