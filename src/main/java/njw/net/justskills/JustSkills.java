@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 @Mod(JustSkills.MODID)
 public class JustSkills {
 
-    public static final String MODID = "jwn_just_skills";
+    public static final String MODID = "njw_just_skills";
 
     public static final Logger LOGGER = LogUtils.getLogger();
 

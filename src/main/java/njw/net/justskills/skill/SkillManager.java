@@ -101,7 +101,7 @@ public final class SkillManager {
         SkillDefinition selected = unlocked.get(player.level().getRandom().nextInt(unlocked.size()));
         setState(player, getState(player).withSkill(selected.id()));
         player.sendSystemMessage(Component.translatable(
-                "message.jwn_just_skills.new_skill",
+                "message.njw_just_skills.new_skill",
                 selected.displayName()
         ));
     }
@@ -113,7 +113,7 @@ public final class SkillManager {
 
         player.sendOverlayMessage(
                 Component.translatable(
-                        "message.jwn_just_skills.cooldown_remaining",
+                        "message.njw_just_skills.cooldown_remaining",
                         minutes,
                         seconds
                 ).withStyle(ChatFormatting.RED)
@@ -122,7 +122,7 @@ public final class SkillManager {
 
     private static void showNoAvailableSkillsMessage(ServerPlayer player) {
         player.sendOverlayMessage(
-                Component.translatable("message.jwn_just_skills.no_available_skills")
+                Component.translatable("message.njw_just_skills.no_available_skills")
                         .withStyle(ChatFormatting.RED)
         );
     }

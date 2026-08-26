@@ -32,7 +32,7 @@ public final class ClientEvents {
 
     private static final KeyMapping USE_SKILL =
             new KeyMapping(
-                    "key.jwn_just_skills.use_skill",
+                    "key.njw_just_skills.use_skill",
                     InputConstants.Type.KEYSYM,
                     GLFW.GLFW_KEY_G,
                     CATEGORY

@@ -114,7 +114,7 @@ public final class CastManager {
                             UUID.randomUUID(),
 
                             Component.translatable(
-                                    "message.jwn_just_skills.casting",
+                                    "message.njw_just_skills.casting",
                                     skill.displayName()
                             ),
 

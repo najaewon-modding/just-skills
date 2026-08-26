@@ -32,7 +32,7 @@ public final class SkillRegistry {
 
     public static final SkillDefinition CRIMSON_WAVE = register(
             "crimson_wave",
-            "skill.jwn_just_skills.crimson_wave",
+            "skill.njw_just_skills.crimson_wave",
             Items.REDSTONE,
             new CrimsonWaveSkill(),
             CastSpec.stationary(DEFAULT_CAST_DURATION_TICKS, DEFAULT_MAX_DISPLACEMENT),
@@ -41,7 +41,7 @@ public final class SkillRegistry {
 
     public static final SkillDefinition AZURE_WAVE = register(
             "azure_wave",
-            "skill.jwn_just_skills.azure_wave",
+            "skill.njw_just_skills.azure_wave",
             Items.LAPIS_LAZULI,
             new AzureWaveSkill(),
             CastSpec.stationary(DEFAULT_CAST_DURATION_TICKS, DEFAULT_MAX_DISPLACEMENT),
@@ -50,7 +50,7 @@ public final class SkillRegistry {
 
     public static final SkillDefinition AMBER_DISK = register(
             "amber_disk",
-            "skill.jwn_just_skills.amber_disk",
+            "skill.njw_just_skills.amber_disk",
             Items.COPPER_INGOT,
             new AmberDiskSkill(),
             CastSpec.stationary(DEFAULT_CAST_DURATION_TICKS, DEFAULT_MAX_DISPLACEMENT),
@@ -59,7 +59,7 @@ public final class SkillRegistry {
 
     public static final SkillDefinition EMERALD_SPIKES = register(
             "emerald_spikes",
-            "skill.jwn_just_skills.emerald_spikes",
+            "skill.njw_just_skills.emerald_spikes",
             Items.EMERALD,
             new EmeraldSpikesSkill(),
             CastSpec.stationary(DEFAULT_CAST_DURATION_TICKS, DEFAULT_MAX_DISPLACEMENT),
@@ -68,7 +68,7 @@ public final class SkillRegistry {
 
     public static final SkillDefinition GOLDEN_FLICKER = register(
             "golden_flicker",
-            "skill.jwn_just_skills.golden_flicker",
+            "skill.njw_just_skills.golden_flicker",
             Items.GLOWSTONE_DUST,
             new GoldenFlickerSkill(),
             CastSpec.stationary(DEFAULT_CAST_DURATION_TICKS, DEFAULT_MAX_DISPLACEMENT),
@@ -77,7 +77,7 @@ public final class SkillRegistry {
 
     public static final SkillDefinition INDIGO_ORBIT = register(
             "indigo_orbit",
-            "skill.jwn_just_skills.indigo_orbit",
+            "skill.njw_just_skills.indigo_orbit",
             Items.ECHO_SHARD,
             new IndigoOrbitSkill(),
             CastSpec.stationary(DEFAULT_CAST_DURATION_TICKS, DEFAULT_MAX_DISPLACEMENT),
@@ -86,7 +86,7 @@ public final class SkillRegistry {
 
     public static final SkillDefinition VIOLET_RIFT = register(
             "violet_rift",
-            "skill.jwn_just_skills.violet_rift",
+            "skill.njw_just_skills.violet_rift",
             Items.AMETHYST_SHARD,
             new VioletRiftSkill(),
             CastSpec.stationary(DEFAULT_CAST_DURATION_TICKS, DEFAULT_MAX_DISPLACEMENT),

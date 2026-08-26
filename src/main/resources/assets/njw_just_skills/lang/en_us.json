@@ -1,0 +1,16 @@
+{
+  "key.category.njw_just_skills.skills": "Just Skills",
+  "key.njw_just_skills.use_skill": "Use Skill",
+  "skill.njw_just_skills.crimson_wave": "Crimson Wave",
+  "skill.njw_just_skills.azure_wave": "Azure Wave",
+  "skill.njw_just_skills.amber_disk": "Amber Disk",
+  "skill.njw_just_skills.emerald_spikes": "Emerald Spikes",
+  "skill.njw_just_skills.golden_flicker": "Golden Flicker",
+  "skill.njw_just_skills.indigo_orbit": "Indigo Orbit",
+  "skill.njw_just_skills.violet_rift": "Violet Rift",
+  "message.njw_just_skills.casting": "Casting: %s",
+  "message.njw_just_skills.new_skill": "New skill: %s",
+  "message.njw_just_skills.already_used": "You have already used this skill.",
+  "message.njw_just_skills.cooldown_remaining": "Skill is not ready yet. Time remaining: %s min %s sec",
+  "message.njw_just_skills.no_available_skills": "No skills are currently available."
+}
