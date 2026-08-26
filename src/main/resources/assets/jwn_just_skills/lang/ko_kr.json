@@ -1,0 +1,12 @@
+{
+  "key.category.jwn_just_skills.skills": "Just Skills",
+  "key.jwn_just_skills.use_skill": "스킬 사용",
+
+  "skill.jwn_just_skills.crimson_wave": "붉은 파동",
+  "skill.jwn_just_skills.azure_wave": "푸른 파동",
+  "skill.jwn_just_skills.amber_disk": "호박빛 원반",
+
+  "message.jwn_just_skills.casting": "시전 중: %s",
+  "message.jwn_just_skills.new_skill": "새로운 스킬: %s",
+  "message.jwn_just_skills.already_used": "이 스킬은 이미 사용했습니다."
+}
