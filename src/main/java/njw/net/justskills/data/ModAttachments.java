@@ -12,7 +12,8 @@ public final class ModAttachments {
     private ModAttachments() {
     }
 
-    public static final DeferredRegister<AttachmentType<?>> ATTACHMENTS =
+    public static final DeferredRegister<AttachmentType<?>>
+            ATTACHMENTS =
             DeferredRegister.create(
                     NeoForgeRegistries.ATTACHMENT_TYPES,
                     JustSkills.MODID
@@ -24,14 +25,27 @@ public final class ModAttachments {
             > PLAYER_SKILL_STATE =
             ATTACHMENTS.register(
                     "player_skill_state",
-                    () -> AttachmentType
-                            .builder(PlayerSkillState::empty)
-                            .serialize(PlayerSkillState.CODEC)
-                            .copyOnDeath()
-                            .build()
+                    () ->
+                            AttachmentType
+                                    .builder(
+                                            PlayerSkillState::empty
+                                    )
+                                    .serialize(
+                                            PlayerSkillState.CODEC
+                                    )
+                                    .copyOnDeath()
+                                    .sync(
+                                            PlayerSkillState.STREAM_CODEC
+                                    )
+                                    .build()
             );
 
-    public static void register(IEventBus eventBus) {
-        ATTACHMENTS.register(eventBus);
+    public static void register(
+            IEventBus eventBus
+    ) {
+
+        ATTACHMENTS.register(
+                eventBus
+        );
     }
 }

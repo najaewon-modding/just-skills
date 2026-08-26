@@ -112,15 +112,33 @@ public record JitterParticleOption(
                         JitterParticleOption value
                 ) {
 
-                    buffer.writeFloat(value.red());
-                    buffer.writeFloat(value.green());
-                    buffer.writeFloat(value.blue());
-                    buffer.writeFloat(value.alpha());
+                    buffer.writeFloat(
+                            value.red()
+                    );
 
-                    buffer.writeFloat(value.size());
-                    buffer.writeFloat(value.jitterStrength());
+                    buffer.writeFloat(
+                            value.green()
+                    );
 
-                    buffer.writeVarInt(value.lifetime());
+                    buffer.writeFloat(
+                            value.blue()
+                    );
+
+                    buffer.writeFloat(
+                            value.alpha()
+                    );
+
+                    buffer.writeFloat(
+                            value.size()
+                    );
+
+                    buffer.writeFloat(
+                            value.jitterStrength()
+                    );
+
+                    buffer.writeVarInt(
+                            value.lifetime()
+                    );
                 }
             };
 
@@ -132,10 +150,33 @@ public record JitterParticleOption(
 
     public JitterParticleOption {
 
-        red = clamp01(red);
-        green = clamp01(green);
-        blue = clamp01(blue);
-        alpha = clamp01(alpha);
+        red =
+                Math.clamp(
+                        red,
+                        0.0F,
+                        1.0F
+                );
+
+        green =
+                Math.clamp(
+                        green,
+                        0.0F,
+                        1.0F
+                );
+
+        blue =
+                Math.clamp(
+                        blue,
+                        0.0F,
+                        1.0F
+                );
+
+        alpha =
+                Math.clamp(
+                        alpha,
+                        0.0F,
+                        1.0F
+                );
 
         size =
                 Math.max(
@@ -156,18 +197,11 @@ public record JitterParticleOption(
                 );
     }
 
-    private static float clamp01(
-            float value
-    ) {
-
-        return Math.max(
-                0.0F,
-                Math.min(
-                        1.0F,
-                        value
-                )
-        );
-    }
+    /*
+     * ============================================================
+     * Type
+     * ============================================================
+     */
 
     @Override
     public ParticleType<?> getType() {

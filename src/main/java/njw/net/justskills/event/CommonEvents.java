@@ -8,7 +8,6 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import njw.net.justskills.JustSkills;
-import njw.net.justskills.skill.SkillManager;
 import njw.net.justskills.skill.cast.CastManager;
 import njw.net.justskills.skill.runtime.AmberDiskManager;
 import njw.net.justskills.skill.runtime.AzureWaveManager;
@@ -37,9 +36,15 @@ public final class CommonEvents {
             return;
         }
 
-        SkillManager.tickPlayer(player);
-
-        CastManager.tick(player);
+        /*
+         * 이제 SkillManager는
+         * 매 tick 돌 필요가 없다.
+         *
+         * 시전 진행만 tick.
+         */
+        CastManager.tick(
+                player
+        );
     }
 
     /*
@@ -55,12 +60,21 @@ public final class CommonEvents {
 
         if (!(event.getLevel()
                 instanceof ServerLevel level)) {
+
             return;
         }
 
-        CrimsonWaveManager.tick(level);
-        AzureWaveManager.tick(level);
-        AmberDiskManager.tick(level);
+        CrimsonWaveManager.tick(
+                level
+        );
+
+        AzureWaveManager.tick(
+                level
+        );
+
+        AmberDiskManager.tick(
+                level
+        );
     }
 
     /*
@@ -77,7 +91,9 @@ public final class CommonEvents {
         if (event.getEntity()
                 instanceof ServerPlayer player) {
 
-            CastManager.cancel(player);
+            CastManager.cancel(
+                    player
+            );
         }
     }
 }

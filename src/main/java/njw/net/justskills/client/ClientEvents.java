@@ -43,9 +43,13 @@ public final class ClientEvents {
             RegisterKeyMappingsEvent event
     ) {
 
-        event.registerCategory(CATEGORY);
+        event.registerCategory(
+                CATEGORY
+        );
 
-        event.register(USE_SKILL);
+        event.register(
+                USE_SKILL
+        );
     }
 
     @SubscribeEvent
