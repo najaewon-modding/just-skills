@@ -87,6 +87,6 @@ Mixin은 사용하지 않습니다.
 
 Game Master 권한이 있는 플레이어만 사용할 수 있습니다.
 
-## 라이선스
+## License
 
-All Rights Reserved.
+MIT
