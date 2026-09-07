@@ -44,7 +44,7 @@ public final class SkillHud {
     private static void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
 
-        if (minecraft.player == null || minecraft.level == null) return;
+        if (minecraft.player == null || minecraft.level == null || minecraft.options.hideGui) return;
 
         int x = graphics.guiWidth() - RIGHT_MARGIN - SLOT_SIZE;
         int y = graphics.guiHeight() - BOTTOM_MARGIN - SLOT_SIZE;
